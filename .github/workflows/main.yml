@@ -40,7 +40,7 @@ jobs:
 
       - name: Prepare workspace for upload
         if: failure()
-        run: tar -czf workspace.tar.gz install_data
+        run: tar -czf workspace.tar.gz install_data bin
 
       - name: Upload workspace
         uses: actions/upload-artifact@v2
@@ -83,7 +83,7 @@ jobs:
 
       - name: Prepare workspace for upload
         if: failure()
-        run: tar -czf workspace.tar.gz install_data
+        run: tar -czf workspace.tar.gz install_data bin
 
       - name: Upload workspace
         uses: actions/upload-artifact@v2
