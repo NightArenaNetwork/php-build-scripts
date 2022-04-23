@@ -248,7 +248,7 @@ else
 		CFLAGS="$CFLAGS -m64 -arch x86_64 -fomit-frame-pointer -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
 		LDFLAGS="$LDFLAGS -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
 		if [ "$DO_STATIC" == "no" ]; then
-			LDFLAGS="$LDFLAGS -Wl,-rpath,@loader_path/../lib";
+			LDFLAGS="$LDFLAGS -Wl,-rpath,@loader_path/../lib,-rpath,\"$INSTALL_DIR/lib\"";
 			export DYLD_LIBRARY_PATH="@loader_path/../lib"
 		fi
 		CFLAGS="$CFLAGS -Qunused-arguments -Wno-error=unused-command-line-argument-hard-error-in-future"
@@ -263,7 +263,7 @@ else
 		CFLAGS="$CFLAGS -arch arm64 -fomit-frame-pointer -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
 		LDFLAGS="$LDFLAGS -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
 		if [ "$DO_STATIC" == "no" ]; then
-			LDFLAGS="$LDFLAGS -Wl,-rpath,@loader_path/../lib";
+			LDFLAGS="$LDFLAGS -Wl,-rpath,@loader_path/../lib,-rpath,\"$INSTALL_DIR/lib\""
 			export DYLD_LIBRARY_PATH="@loader_path/../lib"
 		fi
 		CFLAGS="$CFLAGS -Qunused-arguments"
@@ -992,6 +992,8 @@ echo -n " installing..."
 make install >> "$DIR/install.log" 2>&1
 
 function relativize_macos_library_paths {
+	install_name_tool -delete_rpath "$INSTALL_DIR/lib" "$1" >> "$DIR/install.log" 2>&1
+
 	IFS=$'\n' OTOOL_OUTPUT=($(otool -L "$1"))
 
 	for (( i=0; i<${#OTOOL_OUTPUT[@]}; i++ ))
@@ -1017,8 +1019,6 @@ function relativize_macos_all_libraries_paths {
 
 if [[ "$(uname -s)" == "Darwin" ]] && [[ "$IS_CROSSCOMPILE" != "yes" ]]; then
 	set +e
-	install_name_tool -delete_rpath "$INSTALL_DIR/lib" "$INSTALL_DIR/bin/php" >> "$DIR/install.log" 2>&1
-
 	relativize_macos_library_paths "$INSTALL_DIR/bin/php"
 
 	relativize_macos_all_libraries_paths
