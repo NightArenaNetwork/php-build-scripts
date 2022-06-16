@@ -844,6 +844,8 @@ get_github_extension "morton" "$EXT_MORTON_VERSION" "pmmp" "ext-morton"
 
 get_github_extension "xxhash" "$EXT_XXHASH_VERSION" "pmmp" "ext-xxhash"
 
+get_pecl_extension "zstd" "0.11.0"
+
 echo -n "[PHP]"
 
 if [ "$DO_OPTIMIZE" != "no" ]; then
@@ -935,6 +937,7 @@ $HAS_GD \
 --without-readline \
 $HAS_DEBUG \
 --enable-chunkutils2 \
+--enable-zstd \
 --enable-morton \
 --enable-mbstring \
 --disable-mbregex \
